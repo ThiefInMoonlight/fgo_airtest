@@ -1,6 +1,7 @@
 # -*- encoding=utf8 -*-
 __author__ = "xuecm"
 
+import os
 import time
 
 from airtest.core.api import *
@@ -8,7 +9,7 @@ from airtest.core.api import *
 auto_setup(__file__)
 import random
 import sys
-logDir ='E:\\fgoLog\\'
+logDir ='E:/fgoLog/'
 map = {
     'menu_button': Template(r"tpl1610378834413.png", record_pos=(0.427, 0.248), resolution=(1581, 889)),
     'reenter_battle': Template(r"tpl1610201774476.png", record_pos=(0.157, 0.16), resolution=(1581, 889)),
@@ -42,6 +43,7 @@ appleTypes = {
 
 
 class Core:
+    logFileName = ""
     def __init__(self):
         pass
 
@@ -73,21 +75,40 @@ class Core:
         core.log("sleep time : {}s,{}".format(time, msg))
         sleep(time)
 
+    def createLogFile(self, filename):
+
+        """
+        创建日志文件夹和日志文件
+        :param filename:
+        :return:
+        """
+        self.logFileName = filename
+        path = filename[0:filename.rfind("/")]
+        if not os.path.isdir(path):  # 无文件夹时创建
+            os.makedirs(path)
+        if not os.path.isfile(filename):  # 无文件时创建
+            fd = open(filename, mode="w")
+            fd.close()
+        else:
+            pass
 
 
     def log(self, msg, level=1):
-        # todo:
+        print(self.logFileName)
         # level 1 debug级别 2 info级别
         if level >= 1:
             log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+" "+msg+"\n"
             print (log)
-            f = open(logDir+"fgo.log",'a')
+            f = open(self.logFileName,'a')
             f.write(log)
             f.close()
 
 
-core = Core()
 
+
+core = Core()
+tempFileName = "fgo"+time.strftime("%Y-%m-%d", time.localtime())+".log"
+core.createLogFile(logDir+tempFileName)
 
 # 切面切换
 class SceneCheck:
@@ -336,6 +357,8 @@ def start_FGO_process(times=1, appleType=0, servant="CBA"):
 
 
 start_FGO_process(3)
+
+
 
 
 
