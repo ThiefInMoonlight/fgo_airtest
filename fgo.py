@@ -1,12 +1,14 @@
 # -*- encoding=utf8 -*-
 __author__ = "xuecm"
 
+import time
+
 from airtest.core.api import *
 
 auto_setup(__file__)
 import random
 import sys
-
+logDir ='E:\\fgoLog\\'
 map = {
     'menu_button': Template(r"tpl1610378834413.png", record_pos=(0.427, 0.248), resolution=(1581, 889)),
     'reenter_battle': Template(r"tpl1610201774476.png", record_pos=(0.157, 0.16), resolution=(1581, 889)),
@@ -49,11 +51,11 @@ class Core:
             result = False
         if picName == '' or picName is None:
             result = False
-        if not map.has_key(picName):
-            result = False
+#         if not map.has_key(picName):
+#             result = False
         if map[picName] == '' or map[picName] is None:
             result = False
-        result = self.exists(map[picName])
+        result = exists(map[picName])
         if result == False:
             self.log("{} 不存在".format(picName))
             result = False, (-1, -1)
@@ -64,28 +66,24 @@ class Core:
 
     def coreTouch(self, x, y, msg="", sleepTime=1):
         core.log("点击坐标（{},{})".format(x, y))
-        self.touch((x, y))
+        touch((x, y))
         self.coreSleep(sleepTime, msg)
 
     def coreSleep(self, time, msg=""):
         core.log("sleep time : {}s,{}".format(time, msg))
-        self.sleep(time)
+        sleep(time)
 
-    def exists(self, pic):
-        return (1, 1)
 
-    def touch(self, pos):
-        return
-
-    def sleep(self, time):
-        # sleep(time)
-        return
 
     def log(self, msg, level=1):
         # todo:
         # level 1 debug级别 2 info级别
         if level >= 1:
-            print (msg)
+            log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+" "+msg+"\n"
+            print (log)
+            f = open(logDir+"fgo.log",'a')
+            f.write(log)
+            f.close()
 
 
 core = Core()
@@ -325,7 +323,7 @@ def logQuitMsg():
     core.log('用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
 
 
-def start_FGO_process(times=1, appleType=1, servant="CBA"):
+def start_FGO_process(times=1, appleType=0, servant="CBA"):
     global globalAppleType
     globalAppleType = appleType
     for i in range(0, times):
@@ -338,5 +336,9 @@ def start_FGO_process(times=1, appleType=1, servant="CBA"):
 
 
 start_FGO_process(3)
+
+
+
+
 
 
