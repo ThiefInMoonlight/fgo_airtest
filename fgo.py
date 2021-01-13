@@ -9,7 +9,8 @@ from airtest.core.api import *
 auto_setup(__file__)
 import random
 import sys
-logDir ='E:/fgoLog/'
+
+logDir = 'E:/fgoLog/'
 map = {
     'menu_button': Template(r"tpl1610378834413.png", record_pos=(0.427, 0.248), resolution=(1581, 889)),
     'reenter_battle': Template(r"tpl1610201774476.png", record_pos=(0.157, 0.16), resolution=(1581, 889)),
@@ -27,7 +28,6 @@ map = {
 
 skillTimeSleep = 8
 atkTimeSleep = 5
-pageChangeTimeSleep = 100
 normalTimeSleep = 5
 
 maxLoop = 1000
@@ -44,6 +44,7 @@ appleTypes = {
 
 class Core:
     logFileName = ""
+
     def __init__(self):
         pass
 
@@ -53,26 +54,26 @@ class Core:
             result = False
         if picName == '' or picName is None:
             result = False
-#         if not map.has_key(picName):
-#             result = False
+        #         if not map.has_key(picName):
+        #             result = False
         if map[picName] == '' or map[picName] is None:
             result = False
         result = exists(map[picName])
         if result == False:
-            self.log("{} 不存在".format(picName))
+            self.log("{} 不存在".format(picName), level=1)
             result = False, (-1, -1)
         else:
-            self.log("已找到{}，坐标({},{})".format(picName, result[0], result[1]))
+            self.log("已找到{}，坐标({},{})".format(picName, result[0], result[1]), level=1)
             result = True, result
         return result
 
     def coreTouch(self, x, y, msg="", sleepTime=1):
-        core.log("点击坐标（{},{})".format(x, y))
+        core.log("点击坐标（{},{})".format(x, y), level=1)
         touch((x, y))
         self.coreSleep(sleepTime, msg)
 
     def coreSleep(self, time, msg=""):
-        core.log("sleep time : {}s,{}".format(time, msg))
+        core.log("sleep time : {}s,{}".format(time, msg), level=1)
         sleep(time)
 
     def createLogFile(self, filename):
@@ -92,23 +93,21 @@ class Core:
         else:
             pass
 
-
     def log(self, msg, level=1):
         print(self.logFileName)
         # level 1 debug级别 2 info级别
         if level >= 1:
-            log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())+" "+msg+"\n"
+            log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + " " + msg + "\n"
             print (log)
-            f = open(self.logFileName,'a')
+            f = open(self.logFileName, 'a')
             f.write(log)
             f.close()
 
 
-
-
 core = Core()
-tempFileName = "fgo"+time.strftime("%Y-%m-%d", time.localtime())+".log"
-core.createLogFile(logDir+tempFileName)
+tempFileName = "fgo" + time.strftime("%Y-%m-%d", time.localtime()) + ".log"
+core.createLogFile(logDir + tempFileName)
+
 
 # 切面切换
 class SceneCheck:
@@ -193,33 +192,34 @@ def card(hoguNum=0):
         core.log('随机平A')
 
 
-def useHeroSkill(heroNum, skillNum, target=0):
+def useHeroSkill(heroNo, skillNo, target=0):
     y = 710
-    if heroNum == 1:
+    if heroNo == 1:
         x = 90
-    elif heroNum == 2:
+    elif heroNo == 2:
         x = 480
-    elif heroNum == 3:
+    elif heroNo == 3:
         x = 870
-    x += 110 * (skillNum - 1)
-    # todo 完善target逻辑
-    core.coreTouch(x, y, "对{}号英灵使用{}号英灵的{}技能".format(target, heroNum, skillNum), skillTimeSleep)
+    x += 110 * (skillNo - 1)
+    core.coreTouch(x, y, "{}号英灵的{}技能".format(heroNo, skillNo), skillTimeSleep)
+    if target != 0:
+        core.coreTouch(400 + 300 * (target - 1), 560, "对{}号英灵使用".format(target), skillTimeSleep)
 
 
-def useMasterSkill(skillNum, heroNum=0):
+def useMasterSkill(skillNo, heroNo=0):
     core.coreTouch(1470, 380, "魔术礼装技能菜单", normalTimeSleep)
-    core.coreTouch(1120 + 110 * (skillNum - 1), 380, "魔术礼装{}技能".format(skillNum), normalTimeSleep)
-    if heroNum != 0:
-        core.coreTouch(400 + 300 * (heroNum - 1), 560, "对{}号英灵使用".format(heroNum), normalTimeSleep)
+    core.coreTouch(1120 + 110 * (skillNo - 1), 380, "魔术礼装{}技能".format(skillNo), normalTimeSleep)
+    if heroNo != 0:
+        core.coreTouch(400 + 300 * (heroNo - 1), 560, "对{}号英灵使用".format(heroNo), normalTimeSleep)
 
 
-def hogutankai(heroNum):
+def hogutankai(heroNo):
     # 1080 800 520
-    core.coreTouch(520 + 280 * (heroNum - 1), 250, "宝具使用")
+    core.coreTouch(520 + 280 * (heroNo - 1), 250, "宝具使用")
 
 
 def atkByPosition(order):
-    core.coreTouch(150 + 320 * (order - 1), "指令卡{}".format(order), 2)
+    core.coreTouch(150 + 320 * (order - 1), "指令卡{}".format(order), atkTimeSleep)
 
 
 def doOneBattle():
@@ -279,8 +279,7 @@ def quit_battle():
     if not battleEnd:
         core.log('翻车，进入补刀程序')
         budao()
-    core.log(' Battle finished')
-    core.coreSleep(1)
+    core.coreSleep(1, "战斗结束")
     flag, position = core.existPic('rainbow_box')  # 检测是否掉礼装，若掉落则短信提醒
     if flag:
         lisoNum += 1
@@ -292,7 +291,7 @@ def quit_battle():
 def budao():
     while True:
         while True:
-            core.coreSleep(1)
+            core.coreSleep(1, "等待战斗结束")
             flag, position = core.existPic('battle_finish_sign')
             if flag:
                 break
@@ -306,19 +305,19 @@ def budao():
             break
 
 
-def find_friend(servant):
+def find_friend(servant=""):
     sceneCheck.waitForFriendShowReady()
 
-    # todo:找310CBA直到找到为止
+    flag = servant != ""
+    # 310CBA直到找到为止
     loop = 0
-    while False:
+    while flag:
         loop += 1
         if loop > maxLoop:
             break
         flag, position = core.existPic(servant + '_skill_level')
         if flag:
-            core.log(' Success find', servant)
-            core.coreSleep(1.5)
+            core.coreSleep(1.5, "成功找到{}助战".format(servant))
             core.coreTouch(position[0], position[1] - 60, "选择助战" + servant, 1.5)
             core.coreTouch(1005, 570, "开始战斗", 1.5)
             return True
@@ -344,7 +343,7 @@ def logQuitMsg():
     core.log('用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
 
 
-def start_FGO_process(times=1, appleType=0, servant="CBA"):
+def start_FGO_process(times=1, appleType=0, servant=""):
     global globalAppleType
     globalAppleType = appleType
     for i in range(0, times):
@@ -357,11 +356,4 @@ def start_FGO_process(times=1, appleType=0, servant="CBA"):
 
 
 start_FGO_process(3)
-
-
-
-
-
-
-
 
