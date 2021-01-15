@@ -18,6 +18,7 @@ map = {
     'battle_finish_sign': Template(r"tpl1610205928892.png", record_pos=(-0.002, -0.03), resolution=(1581, 889)),
     'feed_apple_decide': Template(r"tpl1610206565610.png", record_pos=(0.158, 0.155), resolution=(1581, 889)),
     'AP_recover': Template(r"tpl1610206410989.png", record_pos=(-0.007, -0.229), resolution=(1581, 889)),
+    'start_battle': Template(r"tpl1610208679019.png", record_pos=(-0.007, -0.229), resolution=(1581, 889)),
     # 'rainbow_box': "",
     # 'refresh_decide': "",
     'friend_sign': Template(r"tpl1610207591586.png", record_pos=(0.188, -0.107), resolution=(1581, 889)),
@@ -111,6 +112,21 @@ core.createLogFile(logDir + tempFileName)
 
 # 切面切换
 class SceneCheck:
+    def waifForStageChange(self, pic, info):
+        loop = 0
+        flag, position = core.existPic(pic)
+        while bool(1 - flag):
+            loop += 1
+            if loop > maxLoop:
+                break
+            core.coreSleep(1, "等待{}".format(info))
+            flag, position = core.existPic('attack_button')
+        if not flag:
+            quitWithMsg("等待{}过长，退出脚本".format(info))
+
+    def waitForTeamScene(self):
+        self.waifForStageChange('start_battle', "进入阵容界面")
+
     def waitBackToMenu(self):
         loop = 0
         # 是否在主界面
@@ -130,30 +146,10 @@ class SceneCheck:
             quitWithMsg("等待进入主界面过长，退出脚本")
 
     def waitForBattleStart(self):
-        loop = 0
-        flag, position = core.existPic('attack_button')
-        while bool(1 - flag):
-            loop += 1
-            if loop > maxLoop:
-                break
-            core.coreSleep(1, "等待进入战斗界面")
-            flag, position = core.existPic('attack_button')
-        if not flag:
-            quitWithMsg("等待进入战斗界面过长，退出脚本")
+        self.waifForStageChange('attack_button', "进入战斗界面")
 
     def waitForFriendShowReady(self):
-        loop = 0
-        flag, position = core.existPic('friend_sign')
-        while bool(1 - flag):
-            loop += 1
-            if loop > maxLoop:
-                break
-            core.coreSleep(1, "等待进入助战界面")
-            flag, position = core.existPic('friend_sign')
-            if flag:
-                break
-        if not flag:
-            quitWithMsg("等待进入助战界面过长，退出脚本")
+        self.waifForStageChange('friend_sign', "进入助战界面")
 
     def waitForBattleEnd(self):
         loop = 0
@@ -318,15 +314,18 @@ def find_friend(servant=""):
         flag, position = core.existPic(servant + '_skill_level')
         if flag:
             core.coreSleep(1.5, "成功找到{}助战".format(servant))
-            core.coreTouch(position[0], position[1] - 60, "选择助战" + servant, 1.5)
-            core.coreTouch(1005, 570, "开始战斗", 1.5)
+            core.coreTouch(position[0], position[1] - 60, "选择助战" + servant)
             return True
         flag, position = core.existPic('refresh_decide')
         core.coreTouch(position[0], position[1], "刷新好友")
         core.coreTouch(710, 110, "确认刷新好友")
-    core.coreTouch(559, 343, "未找到" + servant + ",选择第一个助战")
-    core.coreTouch(1005, 570, "开始战斗", 1.5)
+    core.coreTouch(559, 343, "未找到助战英灵{},选择第一个助战".format(servant))
     return False
+
+
+def battle_start():
+    sceneCheck.waitForTeamScene()
+    core.coreTouch(1005, 570, "开始战斗")
 
 
 def quitWithMsg(errMsg):
@@ -348,6 +347,7 @@ def start_FGO_process(times=1, appleType=0, servant=""):
     globalAppleType = appleType
     for i in range(0, times):
         find_friend(servant)
+        battle_start()
         doOneBattle()
         quit_battle()
         reenter_battle()
@@ -356,4 +356,3 @@ def start_FGO_process(times=1, appleType=0, servant=""):
 
 
 start_FGO_process(3)
-
