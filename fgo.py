@@ -27,6 +27,10 @@ map = {
     'apple_type3': Template(r"tpl1610206543885.png", record_pos=(-0.206, -0.029), resolution=(1581, 889)),
 }
 
+round1 = {"skills": [[1, 1], [1, 3], [3, 1], [3, 3]], "masterSkills": [[2, 2]], "hoguNo": 3}
+round2 = {"skills": [], "masterSkills": [], "hoguNo": 1}
+round3 = {"skills": [], "masterSkills": [], "hoguNo": 2}
+
 skillTimeSleep = 8
 atkTimeSleep = 5
 normalTimeSleep = 5
@@ -202,11 +206,13 @@ def useHeroSkill(heroNo, skillNo, target=0):
         core.coreTouch(400 + 300 * (target - 1), 560, "对{}号英灵使用".format(target), skillTimeSleep)
 
 
-def useMasterSkill(skillNo, heroNo=0):
+def useMasterSkill(skillNo, heroNo=0, targetHeroNo=0):
     core.coreTouch(1470, 380, "魔术礼装技能菜单", normalTimeSleep)
     core.coreTouch(1120 + 110 * (skillNo - 1), 380, "魔术礼装{}技能".format(skillNo), normalTimeSleep)
     if heroNo != 0:
         core.coreTouch(400 + 300 * (heroNo - 1), 560, "对{}号英灵使用".format(heroNo), normalTimeSleep)
+    if targetHeroNo != 0:
+        core.coreTouch(400 + 300 * (targetHeroNo - 1), 560, "对{}号英灵使用".format(targetHeroNo), normalTimeSleep)
 
 
 def hogutankai(heroNo):
@@ -218,28 +224,36 @@ def atkByPosition(order):
     core.coreTouch(150 + 320 * (order - 1), "指令卡{}".format(order), atkTimeSleep)
 
 
+def doOneRoundByConfig(config):
+    sceneCheck.waitForBattleStart()
+    skills = config["skills"]
+    masterSkills = config["masterSkills"]
+    hoguNo = config["hoguNo"]
+
+    for skill in skills:
+        if len(skill) == 2:
+            useHeroSkill(skill[0], skill[1], skill[2])
+        else:
+            useHeroSkill(skill[0], skill[1])
+
+    for masterSkill in masterSkills:
+        if len(masterSkill) == 1:
+            useMasterSkill(masterSkill[0])
+        elif len(masterSkill) == 2:
+            useMasterSkill(masterSkill[0], masterSkill[1])
+        else:
+            useMasterSkill(masterSkill[0], masterSkill[1], masterSkill[2])
+    card(hoguNo)
+
+
 def doOneBattle():
-    # 判断是否进入战斗界面
-    sceneCheck.waitForBattleStart()
     # Turn1
-    useHeroSkill(1, 1, 0)
-    useHeroSkill(1, 3, 0)
-    useHeroSkill(3, 1, 0)
-    useHeroSkill(3, 3, 0)
-    useMasterSkill(2, 2)
-
-    card(3)
-
-    sceneCheck.waitForBattleStart()
-
+    doOneRoundByConfig(round1)
     # Turn2
+    doOneRoundByConfig(round2)
 
-    card(1)
-
-    sceneCheck.waitForBattleStart()
     # Turn3
-
-    card(2)
+    doOneRoundByConfig(round3)
 
 
 def reenter_battle():
