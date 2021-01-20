@@ -10,26 +10,41 @@ auto_setup(__file__)
 import random
 import sys
 
-logDir = 'E:/fgoLog/'
+logDir = 'C:/fgoLog/'
 map = {
     'menu_button': Template(r"tpl1610378834413.png", record_pos=(0.427, 0.248), resolution=(1581, 889)),
     'reenter_battle': Template(r"tpl1610201774476.png", record_pos=(0.157, 0.16), resolution=(1581, 889)),
     'attack_button': Template(r"tpl1610201201151.png", record_pos=(0.384, 0.188), resolution=(1581, 889)),
-    'battle_finish_sign': Template(r"tpl1610205928892.png", record_pos=(-0.002, -0.03), resolution=(1581, 889)),
+    'battle_finish_sign': Template(r"tpl1610805274890.png", record_pos=(-0.353, -0.136), resolution=(1581, 889)),
     'feed_apple_decide': Template(r"tpl1610206565610.png", record_pos=(0.158, 0.155), resolution=(1581, 889)),
     'AP_recover': Template(r"tpl1610206410989.png", record_pos=(-0.007, -0.229), resolution=(1581, 889)),
     'start_battle': Template(r"tpl1610208679019.png", record_pos=(-0.007, -0.229), resolution=(1581, 889)),
+    'quit_battle': Template(r"tpl1610805772693.png", record_pos=(0.371, 0.247), resolution=(1581, 889)),
     # 'rainbow_box': "",
-    # 'refresh_decide': "",
+    'refresh_decide': Template(r"tpl1610815463019.png", record_pos=(0.165, -0.181), resolution=(1581, 889)),
     'friend_sign': Template(r"tpl1610207591586.png", record_pos=(0.188, -0.107), resolution=(1581, 889)),
-    'apple_type1': Template(r"tpl1610206543885.png", record_pos=(-0.206, -0.029), resolution=(1581, 889)),
-    'apple_type2': Template(r"tpl1610206543885.png", record_pos=(-0.206, -0.029), resolution=(1581, 889)),
+    'apple_type1': Template(r"tpl1610816462463.png", record_pos=(-0.208, -0.026), resolution=(1581, 889)),
+    'apple_type2': Template(r"tpl1610816476626.png", record_pos=(-0.208, 0.087), resolution=(1581, 889)),
     'apple_type3': Template(r"tpl1610206543885.png", record_pos=(-0.206, -0.029), resolution=(1581, 889)),
+
+    #     'CBA_name_pic': Template(r"tpl1610814182310.png", record_pos=(0.237, -0.017), resolution=(1581, 889)),
+    #     'kongming_name_pic':Template(r"tpl1610814359537.png", record_pos=(0.237, 0.136), resolution=(1581, 889)),
+
+    #     'meilin_name_pic':Template(r"tpl1610815294353.png", record_pos=(0.237, 0.128), resolution=(1581, 889)),
+    'CBA_name_pic': Template(r"tpl1610816953292.png", record_pos=(-0.153, -0.043), resolution=(1581, 889)),
+    'kongming_name_pic': Template(r"tpl1610816962826.png", record_pos=(-0.111, 0.103), resolution=(1581, 889)),
+    'meilin_name_pic': Template(r"tpl1610816982721.png", record_pos=(-0.164, 0.089), resolution=(1581, 889)),
+
 }
 
-round1 = {"skills": [[1, 1], [1, 3], [3, 1], [3, 3]], "masterSkills": [[2, 2]], "hoguNo": 3}
-round2 = {"skills": [], "masterSkills": [], "hoguNo": 1}
-round3 = {"skills": [], "masterSkills": [], "hoguNo": 2}
+# round1 = {"skills": [[1, 1], [1, 3], [3, 1], [3, 3]], "masterSkills": [[2, 2]], "hoguNo": 3}
+# round2 = {"skills": [], "masterSkills": [], "hoguNo": 1}
+# round3 = {"skills": [], "masterSkills": [], "hoguNo": 2}
+
+round1 = {"skills": [[2, 2], [2, 3], [1, 1], ], "masterSkills": [], "hoguNo": 1}
+round2 = {"skills": [[1, 3], [2, 1, 1]], "masterSkills": [], "hoguNo": 1}
+round3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 1, 1], [3, 2], [3, 3, 1], [1, 2, 1]],
+          "masterSkills": [[3, 2, 4]], "hoguNo": 1}
 
 skillTimeSleep = 8
 atkTimeSleep = 5
@@ -53,17 +68,20 @@ class Core:
     def __init__(self):
         pass
 
-    def existPic(self, picName):
+    def existPic(self, picName="temp", pic=None):
         result = False
-        if map is None:
-            result = False
-        if picName == '' or picName is None:
-            result = False
-        #         if not map.has_key(picName):
-        #             result = False
-        if map[picName] == '' or map[picName] is None:
-            result = False
-        result = exists(map[picName])
+        if pic is None:
+            if map is None:
+                result = False
+            if picName == '' or picName is None:
+                result = False
+            #         if not map.has_key(picName):
+            #             result = False
+            if map[picName] == '' or map[picName] is None:
+                result = False
+            result = exists(map[picName])
+        else:
+            result = exists(pic)
         if result == False:
             self.log("{} 不存在".format(picName), level=1)
             result = False, (-1, -1)
@@ -73,7 +91,7 @@ class Core:
         return result
 
     def coreTouch(self, x, y, msg="", sleepTime=1):
-        core.log("点击坐标（{},{})".format(x, y), level=1)
+        core.log("点击坐标（{},{}),{}".format(x, y, msg), level=1)
         touch((x, y))
         self.coreSleep(sleepTime, msg)
 
@@ -110,7 +128,7 @@ class Core:
 
 
 core = Core()
-tempFileName = "fgo" + time.strftime("%Y-%m-%d", time.localtime()) + ".log"
+tempFileName = "fgo" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ".log"
 core.createLogFile(logDir + tempFileName)
 
 
@@ -124,7 +142,7 @@ class SceneCheck:
             if loop > maxLoop:
                 break
             core.coreSleep(1, "等待{}".format(info))
-            flag, position = core.existPic('attack_button')
+            flag, position = core.existPic(pic)
         if not flag:
             quitWithMsg("等待{}过长，退出脚本".format(info))
 
@@ -177,7 +195,7 @@ sceneCheck = SceneCheck()
 
 def card(hoguNum=0):
     sceneCheck.waitForBattleStart()
-    core.coreTouch(960, 510, "点击attack", 3)
+    core.coreTouch(1400, 740, "点击attack", 3)
     atkNum = 3
     if hoguNum != 0:
         hogutankai(hoguNum)
@@ -206,13 +224,21 @@ def useHeroSkill(heroNo, skillNo, target=0):
         core.coreTouch(400 + 300 * (target - 1), 560, "对{}号英灵使用".format(target), skillTimeSleep)
 
 
-def useMasterSkill(skillNo, heroNo=0, targetHeroNo=0):
+def useMasterSkill(skillNo, heroNo=0, changeHeroNo=0):
+    # 410,425
+    # 910,430
+    # 170,426
+    #     791,768
     core.coreTouch(1470, 380, "魔术礼装技能菜单", normalTimeSleep)
     core.coreTouch(1120 + 110 * (skillNo - 1), 380, "魔术礼装{}技能".format(skillNo), normalTimeSleep)
-    if heroNo != 0:
-        core.coreTouch(400 + 300 * (heroNo - 1), 560, "对{}号英灵使用".format(heroNo), normalTimeSleep)
-    if targetHeroNo != 0:
-        core.coreTouch(400 + 300 * (targetHeroNo - 1), 560, "对{}号英灵使用".format(targetHeroNo), normalTimeSleep)
+    if changeHeroNo == 0:
+        if heroNo != 0:
+            core.coreTouch(400 + 300 * (heroNo - 1), 560, "对{}号英灵使用".format(heroNo), normalTimeSleep)
+    else:
+        core.coreTouch(170 + 240 * (heroNo - 1), 430, "选择交换{}号英灵".format(heroNo), normalTimeSleep)
+        core.coreTouch(170 + 240 * (changeHeroNo - 1), 430, "选择交换{}号英灵".format(changeHeroNo), normalTimeSleep)
+        core.coreTouch(790, 770, "确认交换", normalTimeSleep)
+        sceneCheck.waitForBattleStart()
 
 
 def hogutankai(heroNo):
@@ -221,7 +247,7 @@ def hogutankai(heroNo):
 
 
 def atkByPosition(order):
-    core.coreTouch(150 + 320 * (order - 1), "指令卡{}".format(order), atkTimeSleep)
+    core.coreTouch(150 + 320 * (order - 1), 600, "指令卡{}".format(order), atkTimeSleep)
 
 
 def doOneRoundByConfig(config):
@@ -230,12 +256,6 @@ def doOneRoundByConfig(config):
     masterSkills = config["masterSkills"]
     hoguNo = config["hoguNo"]
 
-    for skill in skills:
-        if len(skill) == 2:
-            useHeroSkill(skill[0], skill[1], skill[2])
-        else:
-            useHeroSkill(skill[0], skill[1])
-
     for masterSkill in masterSkills:
         if len(masterSkill) == 1:
             useMasterSkill(masterSkill[0])
@@ -243,6 +263,12 @@ def doOneRoundByConfig(config):
             useMasterSkill(masterSkill[0], masterSkill[1])
         else:
             useMasterSkill(masterSkill[0], masterSkill[1], masterSkill[2])
+    for skill in skills:
+        if len(skill) == 3:
+            useHeroSkill(skill[0], skill[1], skill[2])
+        else:
+            useHeroSkill(skill[0], skill[1])
+
     card(hoguNo)
 
 
@@ -261,11 +287,12 @@ def reenter_battle():
     # 确认已经返回菜单界面，或检测到连续出击按键
     flag, position = core.existPic('reenter_battle')
     if flag:
-        core.coreTouch(705, 475, "再次挑战")
+        core.coreTouch(1040, 700, "连续出击")
 
 
 def apple_feed(appleType=0):
     global appleUsedNum, globalAppleType
+    globalAppleType = appleType
     core.coreSleep(5, "战斗结束等待检查体力是否充足")
     flag, position = core.existPic('AP_recover')
     if flag:
@@ -289,13 +316,18 @@ def quit_battle():
     if not battleEnd:
         core.log('翻车，进入补刀程序')
         budao()
-    core.coreSleep(1, "战斗结束")
-    flag, position = core.existPic('rainbow_box')  # 检测是否掉礼装，若掉落则短信提醒
-    if flag:
-        lisoNum += 1
-        core.log("礼装掉落+1，已掉落{}张".format(lisoNum))
-    core.coreTouch(986, 565, "不请求加好友")
-    core.coreTouch(235, 525, "拒绝好友申请")  # 拒绝好友申请
+    core.coreSleep(8, "战斗结束")
+    #     flag, position = core.existPic('rainbow_box')  # 检测是否掉礼装，若掉落则短信提醒
+    #     if flag:
+    #         lisoNum += 1
+    #         core.log("礼装掉落+1，已掉落{}张".format(lisoNum))
+    core.coreTouch(986, 565, "不请求加好友", 5)
+    core.coreTouch(235, 525, "拒绝好友申请", 5)  # 拒绝好友申请
+
+    core.coreTouch(1376, 834, "离开结算界面", 5)  # 离开结算界面
+    global battleClearNum
+    battleClearNum += 1
+    logBattleEnd()
 
 
 def budao():
@@ -320,26 +352,29 @@ def find_friend(servant=""):
 
     flag = servant != ""
     # 310CBA直到找到为止
+    # 1164,417
+    # 1164,659
     loop = 0
     while flag:
         loop += 1
         if loop > maxLoop:
             break
-        flag, position = core.existPic(servant + '_skill_level')
+        flag, position = core.existPic(servant + '_name_pic')
         if flag:
             core.coreSleep(1.5, "成功找到{}助战".format(servant))
-            core.coreTouch(position[0], position[1] - 60, "选择助战" + servant)
+            core.coreTouch(position[0], position[1], "选择助战" + servant)
             return True
         flag, position = core.existPic('refresh_decide')
         core.coreTouch(position[0], position[1], "刷新好友")
-        core.coreTouch(710, 110, "确认刷新好友")
+        core.coreTouch(1033, 693, "确认刷新好友")
+        sceneCheck.waitForFriendShowReady()
     core.coreTouch(559, 343, "未找到助战英灵{},选择第一个助战".format(servant))
     return False
 
 
 def battle_start():
     sceneCheck.waitForTeamScene()
-    core.coreTouch(1005, 570, "开始战斗")
+    core.coreTouch(1400, 740, "开始战斗")
 
 
 def quitWithMsg(errMsg):
@@ -349,19 +384,25 @@ def quitWithMsg(errMsg):
     sys.exit(0)
 
 
+def logBattleEnd():
+    global appleUsedNum, globalAppleType, lisoNum, battleClearNum
+    core.log('已通关 {} 次'.format(battleClearNum), level=2)
+    if globalAppleType != 0:
+        core.log('已用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
+
+
 def logQuitMsg():
     global appleUsedNum, globalAppleType, lisoNum, battleClearNum
 
-    core.log('通关 {} 次'.format(battleClearNum), level=2)
-    core.log('用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
+    core.log('共通关 {} 次'.format(battleClearNum), level=2)
+    if globalAppleType != 0:
+        core.log('共用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
 
 
 def start_FGO_process(times=1, appleType=0, servant=""):
-    global globalAppleType
-    globalAppleType = appleType
     for i in range(0, times):
         find_friend(servant)
-        battle_start()
+        #         battle_start()
         doOneBattle()
         quit_battle()
         reenter_battle()
@@ -369,4 +410,19 @@ def start_FGO_process(times=1, appleType=0, servant=""):
     quitWithMsg("")
 
 
-start_FGO_process(3)
+# core.existPic('reenter_battle')
+# doOneBattle()
+start_FGO_process(30, 2, "CBA")
+# doOneRoundByConfig(round1)
+# doOneRoundByConfig(round3)
+# quit_battle()
+# core.existPic(pic = Template(r"tpl1610812989049.png", record_pos=(0.002, 0.206), resolution=(1581, 889)))
+# core.existPic(pic = Template(r"tpl1610814182310.png", record_pos=(0.237, -0.017), resolution=(1581, 889)))
+# core.existPic(pic = Template(r"tpl1610814359537.png", record_pos=(0.237, 0.136), resolution=(1581, 889)))
+# core.existPic(pic = Template(r"tpl1610815532809.png", record_pos=(0.154, 0.158), resolution=(1581, 889)))
+# reenter_battle()
+
+# find_friend("CBA")
+
+#     # Turn3
+# doOneRoundByConfig(round3)
