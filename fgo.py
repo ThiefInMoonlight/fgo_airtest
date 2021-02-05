@@ -9,6 +9,7 @@ from airtest.core.api import *
 auto_setup(__file__)
 import random
 import sys
+import atexit
 
 logDir = 'C:/fgoLog/'
 map = {
@@ -34,6 +35,7 @@ map = {
     'CBA_name_pic': Template(r"tpl1610816953292.png", record_pos=(-0.153, -0.043), resolution=(1581, 889)),
     'kongming_name_pic': Template(r"tpl1610816962826.png", record_pos=(-0.111, 0.103), resolution=(1581, 889)),
     'meilin_name_pic': Template(r"tpl1610816982721.png", record_pos=(-0.164, 0.089), resolution=(1581, 889)),
+    'reward_pic': "",
 
 }
 
@@ -53,7 +55,7 @@ normalTimeSleep = 5
 maxLoop = 1000
 appleUsedNum = 0
 battleClearNum = 0
-lisoNum = 0
+rewardNum = 0
 globalAppleType = 0
 appleTypes = {
     1: ["金", "apple_type1"],
@@ -229,8 +231,8 @@ def useMasterSkill(skillNo, heroNo=0, changeHeroNo=0):
     # 910,430
     # 170,426
     #     791,768
-    core.coreTouch(1470, 380, "魔术礼装技能菜单", normalTimeSleep)
-    core.coreTouch(1120 + 110 * (skillNo - 1), 380, "魔术礼装{}技能".format(skillNo), normalTimeSleep)
+    core.coreTouch(1470, 380, "魔术目标奖励技能菜单", normalTimeSleep)
+    core.coreTouch(1120 + 110 * (skillNo - 1), 380, "魔术目标奖励{}技能".format(skillNo), normalTimeSleep)
     if changeHeroNo == 0:
         if heroNo != 0:
             core.coreTouch(400 + 300 * (heroNo - 1), 560, "对{}号英灵使用".format(heroNo), normalTimeSleep)
@@ -311,16 +313,16 @@ def apple_feed(appleType=0):
 
 
 def quit_battle():
-    global lisoNum
+    global rewardNum
     battleEnd = sceneCheck.waitForBattleEnd()
     if not battleEnd:
         core.log('翻车，进入补刀程序')
         budao()
     core.coreSleep(8, "战斗结束")
-    #     flag, position = core.existPic('rainbow_box')  # 检测是否掉礼装，若掉落则短信提醒
+    #     flag, position = core.existPic('rainbow_box')  # 检测是否掉目标奖励，若掉落则短信提醒
     #     if flag:
-    #         lisoNum += 1
-    #         core.log("礼装掉落+1，已掉落{}张".format(lisoNum))
+    #         rewardNum += 1
+    #         core.log("目标奖励掉落+1，已掉落{}张".format(rewardNum))
     core.coreTouch(986, 565, "不请求加好友", 5)
     core.coreTouch(235, 525, "拒绝好友申请", 5)  # 拒绝好友申请
 
@@ -372,6 +374,13 @@ def find_friend(servant=""):
     return False
 
 
+def existReward():
+    global rewardNum
+    flag, position = core.existPic('reward_pic')
+    if flag:
+        rewardNum += 1
+
+
 def battle_start():
     sceneCheck.waitForTeamScene()
     core.coreTouch(1400, 740, "开始战斗")
@@ -380,23 +389,23 @@ def battle_start():
 def quitWithMsg(errMsg):
     core.log(errMsg)
     core.coreTouch(0, 0, "退出脚本")
-    logQuitMsg()
     sys.exit(0)
 
 
 def logBattleEnd():
-    global appleUsedNum, globalAppleType, lisoNum, battleClearNum
+    global appleUsedNum, globalAppleType, rewardNum, battleClearNum
     core.log('已通关 {} 次'.format(battleClearNum), level=2)
     if globalAppleType != 0:
-        core.log('已用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
+        core.log('已用了 {} {}苹果,目标奖励掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], rewardNum), level=2)
 
 
+@atexit.register
 def logQuitMsg():
-    global appleUsedNum, globalAppleType, lisoNum, battleClearNum
+    global appleUsedNum, globalAppleType, rewardNum, battleClearNum
 
     core.log('共通关 {} 次'.format(battleClearNum), level=2)
     if globalAppleType != 0:
-        core.log('共用了 {} {}苹果,礼装掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], lisoNum), level=2)
+        core.log('共用了 {} {}苹果,目标奖励掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], rewardNum), level=2)
 
 
 def start_FGO_process(times=1, appleType=0, servant=""):
@@ -426,3 +435,4 @@ start_FGO_process(30, 2, "CBA")
 
 #     # Turn3
 # doOneRoundByConfig(round3)
+
