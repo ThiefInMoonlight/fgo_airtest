@@ -9,7 +9,6 @@ from airtest.core.api import *
 auto_setup(__file__)
 import random
 import sys
-import atexit
 
 logDir = 'C:/fgoLog/'
 map = {
