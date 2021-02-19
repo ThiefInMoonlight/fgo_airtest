@@ -43,10 +43,9 @@ map = {
 # round2 = {"skills": [], "masterSkills": [], "hoguNo": 1}
 # round3 = {"skills": [], "masterSkills": [], "hoguNo": 2}
 
-round1 = {"skills": [[2, 2], [2, 3], [1, 1], ], "masterSkills": [], "hoguNo": 1}
-round2 = {"skills": [[1, 3], [2, 1, 1]], "masterSkills": [], "hoguNo": 1}
-round3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 1, 1], [3, 2], [3, 3, 1], [1, 2, 1]],
-          "masterSkills": [[3, 2, 4]], "hoguNo": 1}
+roundConfig1 = {"skills": [[2, 2], [2, 3], [1, 1], ], "masterSkills": [], "hoguNo": 1}
+roundConfig2 = {"skills": [[1, 3], [2, 1, 1], [3, 1, 1], [1, 2, 1]], "masterSkills": [[3, 2, 4]], "hoguNo": 1}
+roundConfig3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 2], [3, 3, 1]],"masterSkills": [], "hoguNo": 1}
 
 skillTimeSleep = 8
 atkTimeSleep = 5
@@ -130,7 +129,7 @@ class Core:
 
 
 core = Core()
-tempFileName = "fgo" + time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + ".log"
+tempFileName = "fgo" + time.strftime("%Y-%m-%d", time.localtime()) + ".log"
 core.createLogFile(logDir + tempFileName)
 
 
@@ -258,6 +257,11 @@ def doOneRoundByConfig(config):
     masterSkills = config["masterSkills"]
     hoguNo = config["hoguNo"]
 
+    for skill in skills:
+        if len(skill) == 3:
+            useHeroSkill(skill[0], skill[1], skill[2])
+        else:
+            useHeroSkill(skill[0], skill[1])
     for masterSkill in masterSkills:
         if len(masterSkill) == 1:
             useMasterSkill(masterSkill[0])
@@ -265,23 +269,17 @@ def doOneRoundByConfig(config):
             useMasterSkill(masterSkill[0], masterSkill[1])
         else:
             useMasterSkill(masterSkill[0], masterSkill[1], masterSkill[2])
-    for skill in skills:
-        if len(skill) == 3:
-            useHeroSkill(skill[0], skill[1], skill[2])
-        else:
-            useHeroSkill(skill[0], skill[1])
-
     card(hoguNo)
 
 
 def doOneBattle():
     # Turn1
-    doOneRoundByConfig(round1)
+    doOneRoundByConfig(roundConfig1)
     # Turn2
-    doOneRoundByConfig(round2)
+    doOneRoundByConfig(roundConfig2)
 
     # Turn3
-    doOneRoundByConfig(round3)
+    doOneRoundByConfig(roundConfig3)
 
 
 def reenter_battle():
@@ -411,7 +409,8 @@ def logQuitMsg():
 def start_FGO_process(times=1, appleType=0, servant=""):
     for i in range(0, times):
         find_friend(servant)
-        #         battle_start()
+        # if i == 0:
+        #     battle_start()
         doOneBattle()
         quit_battle()
         reenter_battle()
