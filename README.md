@@ -2,6 +2,7 @@
 肝fgo本身是一件很枯燥重复的事情，所以就想着写一个脚本来帮我做这些事情。
 
 ios没法像安卓那么容易调试，安卓有各种模拟器连上pc就可以进入开发者模式，而ios要想调试首先要有苹果的mac。因为没有mac我另辟蹊径找了[黑雷ios模拟器](https://www.heilei.com/)再加上[airtest](http://airtest.netease.com/)（一个自动化脚本测试工具）进行fgo脚本编写。airtest支持python语言，所以用他来写脚本非常方便，使用airtest捕捉ios模拟器的界面然后再在上面做一些基于图像识别或者像素点坐标的点击，而[黑雷ios模拟器](https://www.heilei.com/)则可以在windows机器上运行一个ios模拟器，最后的两者结合的效果有点类似于在windows机器上运行按键精灵。
+
 其实[黑雷ios模拟器](https://www.heilei.com/)运行起来是很卡的，比真机慢好几倍，甚至常常整个模拟器会卡住，但是我在网上找不到更好的了，如果有更好的模拟器请告诉我。
 ## 下面介绍如何使用我的脚本：
 脚本项目的地址如下：https://github.com/SammyXue/fgo.air
@@ -13,9 +14,11 @@ ios没法像安卓那么容易调试，安卓有各种模拟器连上pc就可以
 
 - ### 进入游戏选择关卡
 打开模拟器进入游戏，选择你要打的关卡并且选择助战阶级到caster阶，因为默认的助战是cba，找不到相应的助战程序会出错。
+
 ![caster阶的助战](https://upload-images.jianshu.io/upload_images/13825041-b4fbffb38499a351.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 - ### 选择游戏画面
 点击设备窗上的选择游戏画面然后选择相应的模拟器画面
+
 ![image.png](https://upload-images.jianshu.io/upload_images/13825041-0091855404f6f636.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 - ### 修改脚本代码
 将**脚本编辑窗**中的代码移到最后，找到这一行代码决定这整个脚本的行为：
@@ -37,6 +40,7 @@ roundConfig3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 2], [3, 3, 1]],"mas
 使用宝具：1号英灵使用宝具。
 可以按你的box修改这些技能和宝具配置，最终要做到：**保证宝具清掉1面2面，3面可以留一只残血怪后面靠平A解决**，若无法做到这些程序会出错。
 我的配置如下，非满破宝石的宇宙凛加孔明和双CBA加换人礼装：
+
 ![参考配置](https://upload-images.jianshu.io/upload_images/13825041-ce47f801631d6c1f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
