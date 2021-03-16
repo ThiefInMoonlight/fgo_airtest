@@ -10,6 +10,7 @@ auto_setup(__file__)
 import random
 import sys
 import atexit
+import mailSender
 
 logDir = 'C:/fgoLog/'
 map = {
@@ -378,6 +379,7 @@ def existReward():
     flag, position = core.existPic('reward_pic')
     if flag:
         rewardNum += 1
+        mailSender.sendRewardDropMail(rewardNum)
 
 
 def battle_start():
