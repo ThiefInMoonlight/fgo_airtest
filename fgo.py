@@ -45,7 +45,7 @@ map = {
 
 roundConfig1 = {"skills": [[2, 2], [2, 3], [1, 1], ], "masterSkills": [], "hoguNo": 1}
 roundConfig2 = {"skills": [[1, 3], [2, 1, 1], [3, 1, 1], [1, 2, 1]], "masterSkills": [[3, 2, 4]], "hoguNo": 1}
-roundConfig3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 2], [3, 3, 1]],"masterSkills": [], "hoguNo": 1}
+roundConfig3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 2], [3, 3, 1]], "masterSkills": [], "hoguNo": 1}
 
 skillTimeSleep = 8
 atkTimeSleep = 5
@@ -120,9 +120,10 @@ class Core:
     def log(self, msg, level=1):
         print(self.logFileName)
         # level 1 debug级别 2 info级别
+        log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + " " + msg + "\n"
         if level >= 1:
-            log = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) + " " + msg + "\n"
             print (log)
+        if level >= 2:
             f = open(self.logFileName, 'a')
             f.write(log)
             f.close()
@@ -381,7 +382,8 @@ def existReward():
 
 def battle_start():
     sceneCheck.waitForTeamScene()
-    core.coreTouch(1400, 740, "开始战斗")
+    flag, position = core.existPic("start_battle")
+    core.coreTouch(position[0], position[1], "开始战斗")
 
 
 def quitWithMsg(errMsg):
@@ -409,8 +411,8 @@ def logQuitMsg():
 def start_FGO_process(times=1, appleType=0, servant=""):
     for i in range(0, times):
         find_friend(servant)
-        # if i == 0:
-        #     battle_start()
+        if i == 0:
+            battle_start()
         doOneBattle()
         quit_battle()
         reenter_battle()
@@ -434,4 +436,3 @@ start_FGO_process(30, 2, "CBA")
 
 #     # Turn3
 # doOneRoundByConfig(round3)
-
