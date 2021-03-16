@@ -92,6 +92,20 @@ class Core:
             result = True, result
         return result
 
+    def coreTouchByPic(self, pic, msg="", sleepTime=1):
+        flag, position = self.existPic(pic=pic)
+        if flag:
+            self.coreTouch(position[0], position[1], msg, sleepTime)
+        else:
+            self.log("无法找到图片")
+
+    def coreTouchByPicName(self, picName, msg="", sleepTime=1):
+        flag, position = self.existPic(picName=picName)
+        if flag:
+            self.coreTouch(position[0], position[1], msg + ",图片名：{}".format(picName), sleepTime)
+        else:
+            self.log("无法找到图片：{}".format(picName))
+
     def coreTouch(self, x, y, msg="", sleepTime=1):
         core.log("点击坐标（{},{}),{}".format(x, y, msg), level=1)
         touch((x, y))
