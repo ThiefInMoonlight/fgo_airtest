@@ -422,6 +422,9 @@ def logQuitMsg():
     core.log('共通关 {} 次'.format(battleClearNum), level=2)
     if globalAppleType != 0:
         core.log('共用了 {} {}苹果,目标奖励掉落 {} 个'.format(appleUsedNum, appleTypes[globalAppleType][0], rewardNum), level=2)
+        mailSender.sendMail('脚本执行结束', '共通关 {} 次,共用了 {} {}苹果,目标奖励掉落 {} 个'.format(battleClearNum, appleUsedNum,
+                                                                                appleTypes[globalAppleType][0],
+                                                                                rewardNum))
 
 
 def start_FGO_process(times=1, appleType=0, servant=""):

@@ -5,17 +5,22 @@ from email.header import Header
 
 user = ""
 auth = ""
+mailSenderName = "fgo自动脚本"
+charSet = "utf-8"
 
 
 def sendRewardDropMail(nowNum):
+    sendMail("目标奖励掉落","目标奖励掉落+1，已掉落{}张".format(nowNum))
+
+
+def sendMail(subject,message):
     smtp = smtplib.SMTP_SSL()
     smtp.connect('smtp.qq.com', 465)
 
-    message = MIMEText("目标奖励掉落+1，已掉落{}张".format(nowNum), "plain", "utf-8")
-    message['from'] = Header("fgo自动脚本", "utf-8")
-    message['to'] = Header("fgo自动脚本", "utf-8")
-    subject = "目标奖励掉落"
-    message['subject'] = Header(subject, "utf-8")
+    message = MIMEText(message, "plain", charSet)
+    message['from'] = Header(mailSenderName, charSet)
+    message['to'] = Header(mailSenderName, charSet)
+    message['subject'] = Header(subject, charSet)
 
     try:
 
