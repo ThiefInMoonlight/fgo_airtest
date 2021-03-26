@@ -288,7 +288,15 @@ def doOneRoundByConfig(config):
     card(hoguNo)
 
 
-def doOneBattle():
+def doOneBattle(normalOrBoss=True):
+    if normalOrBoss:
+        doOneNormalBattle()
+    else:
+        doOneBossBattle()
+
+
+def doOneNormalBattle():
+    # 日常3回合的战斗
     # Turn1
     doOneRoundByConfig(roundConfig1)
     # Turn2
@@ -296,6 +304,21 @@ def doOneBattle():
 
     # Turn3
     doOneRoundByConfig(roundConfig3)
+
+
+def doOneBossBattle():
+    # boss战
+    roundNum = 1
+    battleEnd = sceneCheck.waitForBattleEnd()
+    while not battleEnd:
+        if roundNum == 1:
+            doOneRoundByConfig(roundConfig1)
+        elif roundNum == 2:
+            doOneRoundByConfig(roundConfig2)
+        elif roundNum == 3:
+            doOneRoundByConfig(roundConfig3)
+        battleEnd = sceneCheck.waitForBattleEnd()
+        roundNum = roundNum + 1
 
 
 def reenter_battle():
