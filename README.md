@@ -1,12 +1,16 @@
 # fgo.air
-肝fgo本身是一件很枯燥重复的事情，所以就想着写一个脚本来帮我做这些事情。
+推荐使用 雷电模拟器 （设置 宽 828 高 1792 as ipone11）
 
-ios没法像安卓那么容易调试，安卓有各种模拟器连上pc就可以进入开发者模式，而ios要想调试首先要有苹果的mac。因为没有mac我另辟蹊径找了[黑雷ios模拟器](https://www.heilei.com/)再加上[airtest](http://airtest.netease.com/)（一个自动化脚本测试工具）进行fgo脚本编写。airtest支持python语言，所以用他来写脚本非常方便，使用airtest捕捉ios模拟器的界面然后再在上面做一些基于图像识别或者像素点坐标的点击，而[黑雷ios模拟器](https://www.heilei.com/)则可以在windows机器上运行一个ios模拟器，最后的两者结合的效果有点类似于在windows机器上运行按键精灵。
+##### 前置需求
 
-其实[黑雷ios模拟器](https://www.heilei.com/)运行起来是很卡的，比真机慢好几倍，甚至常常整个模拟器会卡住，但是我在网上找不到更好的了，如果有更好的模拟器请告诉我。
+1.  adb 安卓调试工具
+2. airtest 网易提供的自动化测试工具，使用编辑器版 或者 py 包版本均可
+
+airtest 推荐安装py包版本，不需要渲染前端，减少更多的性能消耗, 同时增加一个bat文件可以点击开始。
+
+fgo.py文件末尾，提供3种方法，可以自行注释使用
+
 ## 下面介绍如何使用我的脚本：
-脚本项目的地址如下：https://github.com/SammyXue/fgo.air
-拉下代码后直接用airtest打开这个项目：
 - ### 打开后界面
 选择菜单 文件-打开脚本
 ![打开后界面](https://upload-images.jianshu.io/upload_images/13825041-70801a49fc769464.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -52,6 +56,3 @@ roundConfig3 = {"skills": [[2, 1, 1], [2, 2], [2, 3, 1], [3, 2], [3, 3, 1]],"mas
 ![日志文件](https://upload-images.jianshu.io/upload_images/13825041-fe45149caada9270.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
-
-## 还可优化的地方
-这个脚本还有很多可以优化的地方，比如现在还只支持按英灵名选择助战，后续可以改成按礼装选择助战，比如后续日志里面可以加上掉落的礼装啊材料等等。这些我后期有时间可以去不断优化，包括脚本本身还存在一些bug。大家遇到的bug或者希望得到的优化也可以告诉我.
